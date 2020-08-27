@@ -37,6 +37,25 @@ ___TEMPLATE_PARAMETERS___
     "name": "commissionId",
     "displayName": "Default Commission ID",
     "simpleValueType": true
+  },
+  {
+    "type": "SIMPLE_TABLE",
+    "name": "categoryCommissionIds",
+    "displayName": "Optional Commission IDs for individual Categories",
+    "simpleTableColumns": [
+      {
+        "defaultValue": "",
+        "displayName": "Category",
+        "name": "category",
+        "type": "TEXT"
+      },
+      {
+        "defaultValue": "",
+        "displayName": "Commission ID",
+        "name": "commissionId",
+        "type": "TEXT"
+      }
+    ]
   }
 ]
 
@@ -63,13 +82,15 @@ function createArgumentsQueue() {
 function sendOrder() {
   const bb = createArgumentsQueue();
   const orderData = copyFromDataLayer('ecommerce');
+  const categoryCommissionIds = data.categoryCommissionIds;
   const commissionId = data.commissionId;
   if (orderData && orderData.purchase && orderData.purchase.products && orderData.purchase.products.length) {
     const serializedData = orderData.purchase.products.map((product) => {
+      const definedCategoryCID = categoryCommissionIds.filter((c) => c.category === product.category);
       return {
         productId: product.id,
         quantity: product.quantity,
-        commissionId: commissionId,
+        commissionId: definedCategoryCID[0] && definedCategoryCID[0].commissionId || commissionId,
         gross: product.price,
       };
     });
