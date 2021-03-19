@@ -43,6 +43,7 @@ ___TEMPLATE_PARAMETERS___
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
+const log = require('logToConsole');
 const copyFromWindow = require('copyFromWindow');
 const copyFromDataLayer = require('copyFromDataLayer');
 const setInWindow = require('setInWindow');
@@ -64,6 +65,12 @@ function sendOrder() {
   const bb = createArgumentsQueue();
   const orderData = copyFromDataLayer('ecommerce');
   const commissionId = data.commissionId;
+  if (!commissionId) {
+    log({
+      code: 'ERR_MISSING_COMMISSION_ID',
+      message: 'Missing commission ID'
+    });
+  }
   if (orderData && orderData.purchase && orderData.purchase.products && orderData.purchase.products.length) {
     const serializedData = orderData.purchase.products.map((product) => {
       return {
@@ -74,6 +81,23 @@ function sendOrder() {
       };
     });
     bb('order', { orderId: orderData.purchase.actionField.id, products: serializedData });
+  } else {
+    const errCode = 'ERR_MISSING_ORDER_DATA';
+    let errMessage = 'Missing order data';
+    if (!orderData) {
+      errMessage = 'Missing order data';
+    } else if (!orderData.purchase) {
+      errMessage = 'Missing purchase data';
+    } else if (!orderData.purchase.products || !orderData.purchase.products.length) {
+      errMessage = 'Missing or empty products data';
+    }
+    log({
+      code: 'ERR_MISSING_ORDER_DATA',
+      message: errMessage,
+      details: {
+        orderData: orderData
+      }
+    });
   }
 }
 
@@ -84,6 +108,27 @@ data.gtmOnSuccess();
 ___WEB_PERMISSIONS___
 
 [
+  {
+    "instance": {
+      "key": {
+        "publicId": "logging",
+        "versionId": "1"
+      },
+      "param": [
+        {
+          "key": "environments",
+          "value": {
+            "type": 1,
+            "string": "all"
+          }
+        }
+      ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
+    },
+    "isRequired": true
+  },
   {
     "instance": {
       "key": {
