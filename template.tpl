@@ -82,7 +82,6 @@ function sendOrder() {
     });
     bb('order', { orderId: orderData.purchase.actionField.id, products: serializedData });
   } else {
-    const errCode = 'ERR_MISSING_ORDER_DATA';
     let errMessage = 'Missing order data';
     if (!orderData) {
       errMessage = 'Missing order data';
