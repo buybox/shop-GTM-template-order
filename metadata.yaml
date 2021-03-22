@@ -1,7 +1,7 @@
 homepage: "https://getbuybox.com/"
 documentation: "https://help.getbuybox.com/pl/articles/1290807-skrypty-sklepowe"
 versions:
-  - sha: 1d92fa423a973dc8b21245c34abb0a7d8e004384
+  - sha: 758cb7218e28b6b155295559dd0af55a9ca1f18d
     changeNotes: Add error logging.
   - sha: 4a049c6bacb3170adb2368da5b33076650296179
     changeNotes: Update template icon.
