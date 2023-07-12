@@ -71,23 +71,23 @@ function sendOrder() {
       message: 'Missing commission ID'
     });
   }
-  if (orderData && orderData.purchase && orderData.purchase.products && orderData.purchase.products.length) {
-    const serializedData = orderData.purchase.products.map((product) => {
+  if (orderData && orderData.event === 'purchase' && orderData.items && orderData.items.length) {
+    const serializedData = orderData.items.map((item) => {
       return {
-        productId: product.id,
-        quantity: product.quantity,
+        productId: item.item_id,
+        quantity: item.quantity,
         commissionId: commissionId,
-        gross: product.price,
+        gross: item.price,
       };
     });
-    bb('order', { orderId: orderData.purchase.actionField.id, products: serializedData });
+    bb('order', { orderId: orderData.transaction_id, products: serializedData });
   } else {
     let errMessage = 'Missing order data';
     if (!orderData) {
       errMessage = 'Missing order data';
-    } else if (!orderData.purchase) {
+    } else if (orderData.event !== 'purchase') {
       errMessage = 'Missing purchase data';
-    } else if (!orderData.purchase.products || !orderData.purchase.products.length) {
+    } else if (!orderData.items || !orderData.items.length) {
       errMessage = 'Missing or empty products data';
     }
     log({
