@@ -45,7 +45,6 @@ ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
 const log = require('logToConsole');
 const copyFromWindow = require('copyFromWindow');
-const copyFromDataLayer = require('copyFromDataLayer');
 const setInWindow = require('setInWindow');
 
 function createArgumentsQueue() {
@@ -61,9 +60,25 @@ function createArgumentsQueue() {
   return bb;
 }
 
+function getEcommerceData() {
+  for (let i = 0; i < window.dataLayer.length; i++) {
+    if (window.dataLayer[i].event === 'purchase') {
+      // Check if the data is in the 'ecommerce' object
+      if (window.dataLayer[i].ecommerce) {
+        return window.dataLayer[i].ecommerce;
+      }
+      // Check if the data is in the 'eventModel' object
+      else if (window.dataLayer[i].eventModel) {
+        return window.dataLayer[i].eventModel;
+      }
+    }
+  }
+  return null;
+}
+
 function sendOrder() {
   const bb = createArgumentsQueue();
-  const orderData = copyFromDataLayer('ecommerce');
+  const orderData = getEcommerceData();
   const commissionId = data.commissionId;
   if (!commissionId) {
     log({
@@ -71,7 +86,7 @@ function sendOrder() {
       message: 'Missing commission ID'
     });
   }
-  if (orderData && orderData.event === 'purchase' && orderData.items && orderData.items.length) {
+  if (orderData && orderData.items && orderData.items.length) {
     const serializedData = orderData.items.map((item) => {
       return {
         productId: item.item_id,
@@ -85,8 +100,6 @@ function sendOrder() {
     let errMessage = 'Missing order data';
     if (!orderData) {
       errMessage = 'Missing order data';
-    } else if (orderData.event !== 'purchase') {
-      errMessage = 'Missing purchase data';
     } else if (!orderData.items || !orderData.items.length) {
       errMessage = 'Missing or empty products data';
     }
