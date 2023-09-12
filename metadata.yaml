@@ -1,7 +1,7 @@
 homepage: "https://getbuybox.com/"
 documentation: "https://help.getbuybox.com/pl/articles/1290807-skrypty-sklepowe"
 versions:
-  - sha: add6c4bcb3ed4bc739f10c050281192ffc9dc00a
+  - sha: c1521d76a29c1e1314912f94c4a8cb0270d6b082
     changeNotes: Replace copyFromDataLayer
   - sha: c5ec2193f2751eeb0fee21ad8658c378e8d90738
     changeNotes: Update to GA4 ecommerce.
