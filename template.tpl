@@ -86,6 +86,7 @@ function sendOrder() {
       message: 'Missing commission ID'
     });
   }
+  
   if (orderData && orderData.items && orderData.items.length) {
     const serializedData = orderData.items.map((item) => {
       return {
